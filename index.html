@@ -79,6 +79,8 @@
 <div id="openseadragon"></div>
 
 <script>
+const TILE_PREFIX = "https://pub-c75c4d452d9848a697de4b2826d42361.r2.dev/tiles";
+
   const viewer = OpenSeadragon({
     id: "openseadragon",
     prefixUrl: "https://openseadragon.github.io/openseadragon/images/",
@@ -94,14 +96,14 @@
   let tiledImage;
 
   const tileSources = {
-    0: { tileSize: 1536, width: 1536, height: 1536, minLevel: 0, maxLevel: 0, getTileUrl: (level, x, y) => `tiles/layer_0/${y}_${x}.png?nocache=${Math.random()}` },
-    1: { tileSize: 1536, width: 4608, height: 4608, minLevel: 0, maxLevel: 0, getTileUrl: (level, x, y) => `tiles/layer_1/${y}_${x}.png?nocache=${Math.random()}` },
-    2: { tileSize: 512, width: 4608, height: 4608, minLevel: 0, maxLevel: 0, getTileUrl: (level, x, y) => `tiles/layer_2/${y}_${x}.png?nocache=${Math.random()}` },
-    3: { tileSize: 512, width: 13824, height: 13824, minLevel: 0, maxLevel: 0, getTileUrl: (level, x, y) => `tiles/layer_3/${y}_${x}.png?nocache=${Math.random()}` },
-    4: { tileSize: 512, width: 41472, height: 41472, minLevel: 0, maxLevel: 0, getTileUrl: (level, x, y) => `tiles/layer_4/${y}_${x}.png?nocache=${Math.random()}` },
-    5: { tileSize: 512, width: 124416, height: 124416, minLevel: 0, maxLevel: 0, getTileUrl: (level, x, y) => `tiles/layer_5/${y}_${x}.png?nocache=${Math.random()}` },
-    6: { tileSize: 512, width: 373248, height: 373248, minLevel: 0, maxLevel: 0, getTileUrl: (level, x, y) => `tiles/layer_6/${y}_${x}.png?nocache=${Math.random()}` },
-    7: { tileSize: 512, width: 1119744, height: 1119744, minLevel: 0, maxLevel: 0, getTileUrl: (level, x, y) => `tiles/layer_7/${y}_${x}.png?nocache=${Math.random()}` }
+    0: { tileSize: 1536, width: 1536, height: 1536, minLevel: 0, maxLevel: 0, getTileUrl: (level, x, y) => `${TILE_PREFIX}/layer_0/${y}_${x}.png` },
+    1: { tileSize: 1536, width: 4608, height: 4608, minLevel: 0, maxLevel: 0, getTileUrl: (level, x, y) => `${TILE_PREFIX}/layer_1/${y}_${x}.png` },
+    2: { tileSize: 512, width: 4608, height: 4608, minLevel: 0, maxLevel: 0, getTileUrl: (level, x, y) => `${TILE_PREFIX}/layer_2/${y}_${x}.png` },
+    3: { tileSize: 512, width: 13824, height: 13824, minLevel: 0, maxLevel: 0, getTileUrl: (level, x, y) => `${TILE_PREFIX}/layer_3/${y}_${x}.png` },
+    4: { tileSize: 512, width: 41472, height: 41472, minLevel: 0, maxLevel: 0, getTileUrl: (level, x, y) => `${TILE_PREFIX}/layer_4/${y}_${x}.png` },
+    5: { tileSize: 512, width: 124416, height: 124416, minLevel: 0, maxLevel: 0, getTileUrl: (level, x, y) => `${TILE_PREFIX}/layer_5/${y}_${x}.png` },
+    6: { tileSize: 512, width: 373248, height: 373248, minLevel: 0, maxLevel: 0, getTileUrl: (level, x, y) => `${TILE_PREFIX}/layer_6/${y}_${x}.png` },
+    7: { tileSize: 512, width: 1119744, height: 1119744, minLevel: 0, maxLevel: 0, getTileUrl: (level, x, y) => `${TILE_PREFIX}/layer_7/${y}_${x}.png` }
   };
 
   function setActiveButton(layerNumber) {
