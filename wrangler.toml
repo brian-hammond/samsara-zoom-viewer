@@ -1,0 +1,8 @@
+account_id = "f2d45a0d0ff12c47188a68e955defa23"
+name = "samsara-super-zoom-uploader"
+compatibility_date = "2025-01-01"
+
+[[r2_buckets]]
+binding = "samsara-super-zoom"
+bucket_name = "samsara-super-zoom"
+preview_bucket_name = "samsara-super-zoom"
