@@ -3,30 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Infinite Zoom Viewer</title>
-  <script src="https://openseadragon.github.io/openseadragon/openseadragon.min.js">
-  
-  
-  function handleFullscreenChange() {
-    const container = document.getElementById("openseadragon");
-    const isFullscreen = document.fullscreenElement != null;
-    container.style.width = isFullscreen ? "100vw" : "100vw";
-    container.style.height = isFullscreen ? "100vh" : "100vh";
-    try {
-      if (viewer && viewer.viewport) {
-        viewer.viewport.resize();
-        viewer.forceRedraw();
-      }
-    } catch (e) {
-      console.warn("Resize error:", e);
-    }
-  }
-
-  document.addEventListener("fullscreenchange", handleFullscreenChange);
-  document.addEventListener("webkitfullscreenchange", handleFullscreenChange);
-  document.addEventListener("mozfullscreenchange", handleFullscreenChange);
-  document.addEventListener("MSFullscreenChange", handleFullscreenChange);
-
-</script>
+  <script src="https://openseadragon.github.io/openseadragon/openseadragon.min.js"></script>
   <style>
     body {
       margin: 0;
@@ -34,12 +11,6 @@
     }
 
     #openseadragon {
-  touch-action: none;
-  user-select: none;
-  -webkit-user-select: none;
-  position: absolute;
-  top: 0;
-  left: 0;
       width: 100vw;
       height: 100vh;
       background: #111;
@@ -99,7 +70,9 @@
   <button onclick="goToLayer(3)">Layer 3</button>
   <button onclick="goToLayer(4)">Layer 4</button>
   <button onclick="goToLayer(5)">Layer 5</button>
-  </div>
+  <button onclick="goToLayer(6)">Layer 6</button>
+  <button onclick="goToLayer(7)">Layer 7</button>
+</div>
 
 <div id="zoom-display">Zoom: 1.00</div>
 
@@ -128,6 +101,9 @@ const TILE_PREFIX = "https://pub-c75c4d452d9848a697de4b2826d42361.r2.dev/tiles";
     2: { tileSize: 512, width: 4608, height: 4608, minLevel: 0, maxLevel: 0, getTileUrl: (level, x, y) => `${TILE_PREFIX}/layer_2/${y}_${x}.png` },
     3: { tileSize: 512, width: 13824, height: 13824, minLevel: 0, maxLevel: 0, getTileUrl: (level, x, y) => `${TILE_PREFIX}/layer_3/${y}_${x}.png` },
     4: { tileSize: 512, width: 41472, height: 41472, minLevel: 0, maxLevel: 0, getTileUrl: (level, x, y) => `${TILE_PREFIX}/layer_4/${y}_${x}.png` },
+    5: { tileSize: 512, width: 124416, height: 124416, minLevel: 0, maxLevel: 0, getTileUrl: (level, x, y) => `${TILE_PREFIX}/layer_5/${y}_${x}.png` },
+    6: { tileSize: 512, width: 373248, height: 373248, minLevel: 0, maxLevel: 0, getTileUrl: (level, x, y) => `${TILE_PREFIX}/layer_6/${y}_${x}.png` },
+    7: { tileSize: 512, width: 1119744, height: 1119744, minLevel: 0, maxLevel: 0, getTileUrl: (level, x, y) => `${TILE_PREFIX}/layer_7/${y}_${x}.png` }
   };
 
   function setActiveButton(layerNumber) {
@@ -168,6 +144,8 @@ const TILE_PREFIX = "https://pub-c75c4d452d9848a697de4b2826d42361.r2.dev/tiles";
       3: 5,
       4: 15,
       5: 50,
+      6: 120,
+      7: 180
     };
 
     const targetZoom = zoomLevels[layerNumber];
@@ -210,7 +188,13 @@ const TILE_PREFIX = "https://pub-c75c4d452d9848a697de4b2826d42361.r2.dev/tiles";
     else if (zoom < 7.0) newLayer = 3;
     else if (zoom < 20.0) newLayer = 4;
     else if (zoom < 100.0) newLayer = 5;
-    else newLayer = 5;const zd = document.getElementById("zoom-display"); if (zd) zd.textContent = `Zoom: ${zoom.toFixed(2)}`;
+    else if (zoom < 160.0) newLayer = 6;
+    else newLayer = 7;
+     
+
+
+    
+  document.getElementById("zoom-display").textContent = `Zoom: ${zoom.toFixed(2)}`;
 if (newLayer !== currentLayer) {
       if (layerSwitchTimeout) clearTimeout(layerSwitchTimeout);
       layerSwitchTimeout = setTimeout(() => {
@@ -221,29 +205,6 @@ if (newLayer !== currentLayer) {
       }, 200);
     }
   });
-
-  
-  
-  function handleFullscreenChange() {
-    const container = document.getElementById("openseadragon");
-    const isFullscreen = document.fullscreenElement != null;
-    container.style.width = isFullscreen ? "100vw" : "100vw";
-    container.style.height = isFullscreen ? "100vh" : "100vh";
-    try {
-      if (viewer && viewer.viewport) {
-        viewer.viewport.resize();
-        viewer.forceRedraw();
-      }
-    } catch (e) {
-      console.warn("Resize error:", e);
-    }
-  }
-
-  document.addEventListener("fullscreenchange", handleFullscreenChange);
-  document.addEventListener("webkitfullscreenchange", handleFullscreenChange);
-  document.addEventListener("mozfullscreenchange", handleFullscreenChange);
-  document.addEventListener("MSFullscreenChange", handleFullscreenChange);
-
 </script>
 
 </body>
