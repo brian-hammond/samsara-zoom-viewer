@@ -128,7 +128,9 @@ const TILE_PREFIX = "https://pub-c75c4d452d9848a697de4b2826d42361.r2.dev/tiles";
     2: { tileSize: 512, width: 4608, height: 4608, minLevel: 0, maxLevel: 0, getTileUrl: (level, x, y) => `${TILE_PREFIX}/layer_2/${y}_${x}.png` },
     3: { tileSize: 512, width: 13824, height: 13824, minLevel: 0, maxLevel: 0, getTileUrl: (level, x, y) => `${TILE_PREFIX}/layer_3/${y}_${x}.png` },
     4: { tileSize: 512, width: 41472, height: 41472, minLevel: 0, maxLevel: 0, getTileUrl: (level, x, y) => `${TILE_PREFIX}/layer_4/${y}_${x}.png` },
+    5: { tileSize: 512, width: 124416, height: 124416, minLevel: 0, maxLevel: 0, getTileUrl: (level, x, y) => `${TILE_PREFIX}/layer_4/${y}_${x}.png` },
   };
+  
 
   function setActiveButton(layerNumber) {
     const buttons = document.querySelectorAll(".zoom-buttons button");
