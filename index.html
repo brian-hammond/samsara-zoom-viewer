@@ -197,7 +197,7 @@ const TILE_PREFIX = "https://pub-c75c4d452d9848a697de4b2826d42361.r2.dev/tiles";
   
   // Suppress tile load errors to avoid console noise for sparse layers
   viewer.addHandler("tile-load-failed", function (event) {
-    event.preventDefault();
+    event.cancel = true;
   });
   OpenSeadragon.setString("Errors.Tile", "");
 
