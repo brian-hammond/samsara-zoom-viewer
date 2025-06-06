@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Infinite Zoom Viewer</title>
+  <script src="https://openseadragon.github.io/openseadragon/openseadragon.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+
+    #openseadragon {
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #111;
+    }
+
+    .zoom-buttons {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 999;
+      display: flex;
+      gap: 8px;
+    }
+
+    .zoom-buttons button {
+      background-color: rgba(255, 255, 255, 0.85);
+      border: none;
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .zoom-buttons button:hover {
+      background-color: #ddd;
+    }
+
+
+    #zoom-display {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      padding: 6px 12px;
+      background: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      font-family: monospace;
+      font-size: 14px;
+      border-radius: 4px;
+      z-index: 999;
+    }
+
+
+    .zoom-buttons button.active {
+      background-color: #444;
+      color: white;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<div class="zoom-buttons">
+  <button onclick="goToLayer(0)">Layer 0</button>
+  <button onclick="goToLayer(1)">Layer 1</button>
+  <button onclick="goToLayer(2)">Layer 2</button>
+  <button onclick="goToLayer(3)">Layer 3</button>
+  <button onclick="goToLayer(4)">Layer 4</button>
+  <button onclick="goToLayer(5)">Layer 5</button>
+  </div>
+
+<div id="zoom-display">Zoom: 1.00</div>
+
+<div id="openseadragon"></div>
+
+<script>
+const TILE_PREFIX = "https://samsara.tiles.generativecuriosities.com/tiles";
+
+  const viewer = OpenSeadragon({
+    id: "openseadragon",
+    prefixUrl: "https://openseadragon.github.io/openseadragon/images/",
+    showNavigationControl: true,
+    minZoomLevel: 0.5,
+    maxZoomPixelRatio: 2,
+    zoomPerScroll: 1.2,
+    defaultZoomLevel: 0.7,
+    visibilityRatio: 1.0
+  });
+
+	function safeGetTileUrl(baseUrl, layer, width, height, tileSize, fallbackUrl) {
+	  const maxX = Math.ceil(width / tileSize);
+	  const maxY = Math.ceil(height / tileSize);
+
+	  return function(level, x, y) {
+		if (x < 0 || x >= maxX || y < 0 || y >= maxY) {
+		  return fallbackUrl;
+		}
+		return `${baseUrl}/layer_${layer}/${y}_${x}.webp`;
+	  };
+	}
+	
+  let currentLayer = -1;
+  let tiledImage;
+
+  const fallbackTile = 'https://samsara.tiles.generativecuriosities.com/default.webp';
+
+  const tileSources = {
+	  0: {
+		tileSize: 1536,
+		width: 1536,
+		height: 1536,
+		minLevel: 0,
+		maxLevel: 0,
+		getTileUrl: safeGetTileUrl(TILE_PREFIX, 0, 1536, 1536, 1536, fallbackTile)
+	  },
+	  1: {
+		tileSize: 1536,
+		width: 4608,
+		height: 4608,
+		minLevel: 0,
+		maxLevel: 0,
+		getTileUrl: safeGetTileUrl(TILE_PREFIX, 1, 4608, 4608, 1536, fallbackTile)
+	  },
+	  2: {
+		tileSize: 512,
+		width: 4608,
+		height: 4608,
+		minLevel: 0,
+		maxLevel: 0,
+		getTileUrl: safeGetTileUrl(TILE_PREFIX, 2, 4608, 4608, 512, fallbackTile)
+	  },
+	  3: {
+		tileSize: 512,
+		width: 13824,
+		height: 13824,
+		minLevel: 0,
+		maxLevel: 0,
+		getTileUrl: safeGetTileUrl(TILE_PREFIX, 3, 13824, 13824, 512, fallbackTile)
+	  },
+	  4: {
+		tileSize: 512,
+		width: 41472,
+		height: 41472,
+		minLevel: 0,
+		maxLevel: 0,
+		getTileUrl: safeGetTileUrl(TILE_PREFIX, 4, 41472, 41472, 512, fallbackTile)
+	  },
+	  5: {
+		tileSize: 512,
+		width: 124416,
+		height: 124416,
+		minLevel: 0,
+		maxLevel: 0,
+		getTileUrl: safeGetTileUrl(TILE_PREFIX, 5, 124416, 124416, 512, fallbackTile)
+	  }
+	};
+
+
+  
+  /*
+  const tileSources = {
+    0: { tileSize: 1536, width: 1536, height: 1536, minLevel: 0, maxLevel: 0, getTileUrl: (level, x, y) => `${TILE_PREFIX}/layer_0/${y}_${x}.webp` },
+    1: { tileSize: 1536, width: 4608, height: 4608, minLevel: 0, maxLevel: 0, getTileUrl: (level, x, y) => `${TILE_PREFIX}/layer_1/${y}_${x}.webp` },
+    2: { tileSize: 512, width: 4608, height: 4608, minLevel: 0, maxLevel: 0, getTileUrl: (level, x, y) => `${TILE_PREFIX}/layer_2/${y}_${x}.webp` },
+    3: { tileSize: 512, width: 13824, height: 13824, minLevel: 0, maxLevel: 0, getTileUrl: (level, x, y) => `${TILE_PREFIX}/layer_3/${y}_${x}.webp` },
+    4: { tileSize: 512, width: 41472, height: 41472, minLevel: 0, maxLevel: 0, getTileUrl: (level, x, y) => `${TILE_PREFIX}/layer_4/${y}_${x}.webp` },
+    5: { tileSize: 512, width: 124416, height: 124416, minLevel: 0, maxLevel: 0, getTileUrl: (level, x, y) => `${TILE_PREFIX}/layer_5/${y}_${x}.webp` },
+  };
+  */
+
+  function setActiveButton(layerNumber) {
+    const buttons = document.querySelectorAll(".zoom-buttons button");
+    buttons.forEach((btn, idx) => {
+      if (idx === layerNumber) {
+        btn.classList.add("active");
+      } else {
+        btn.classList.remove("active");
+      }
+    });
+  }
+
+  function loadLayer(layerNumber, zoomPreserve = true) {
+    const center = viewer.viewport.getCenter();
+    const zoom = viewer.viewport.getZoom();
+    viewer.world.removeAll();
+    viewer.addTiledImage({
+      tileSource: tileSources[layerNumber],
+      success: function (event) {
+        tiledImage = event.item;
+        if (zoomPreserve) {
+          viewer.viewport.zoomTo(zoom, null, true);
+          viewer.viewport.panTo(center, true);
+        }
+      }
+    });
+  }
+
+  function goToLayer(layerNumber) {
+    currentLayer = layerNumber;
+    setActiveButton(layerNumber);
+
+    const zoomLevels = {
+      0: 0.6,
+      1: 1.0,
+      2: 2.5,
+      3: 5,
+      4: 15,
+      5: 50,
+    };
+
+    const targetZoom = zoomLevels[layerNumber];
+    const center = viewer.viewport.getCenter();
+    viewer.world.removeAll();
+    viewer.addTiledImage({
+      tileSource: tileSources[layerNumber],
+      success: function (event) {
+        tiledImage = event.item;
+        viewer.viewport.panTo(center, true);
+        setTimeout(() => {
+          viewer.viewport.zoomTo(targetZoom, center, true);
+        }, 50);
+      }
+    });
+  }
+
+  // Initial load
+  loadLayer(1);
+  currentLayer = 1;
+  setActiveButton(1);
+
+  // Zoom-based autoswitch
+  let layerSwitchTimeout = null;
+  
+  
+  // Suppress tile load errors to avoid console noise for sparse layers
+  viewer.addHandler("tile-load-failed", function (event) {
+    event.cancel = true;
+  });
+  OpenSeadragon.setString("Errors.Tile", "");
+
+
+  viewer.addHandler("animation", function () {
+    const zoom = viewer.viewport.getZoom();
+    let newLayer;
+
+    if (zoom < 1.0) newLayer = 0;
+    else if (zoom < 1.5) newLayer = 1;
+    else if (zoom < 3.0) newLayer = 2;
+    else if (zoom < 7.0) newLayer = 3;
+    else if (zoom < 20.0) newLayer = 4;
+    else if (zoom < 100.0) newLayer = 5;
+    else newLayer = 5;const zd = document.getElementById("zoom-display"); if (zd) zd.textContent = `Zoom: ${zoom.toFixed(2)}`;
+if (newLayer !== currentLayer) {
+      if (layerSwitchTimeout) clearTimeout(layerSwitchTimeout);
+      layerSwitchTimeout = setTimeout(() => {
+        currentLayer = newLayer;
+        setActiveButton(newLayer);
+        console.log(`\u2b06\ufe0f Switching to layer ${newLayer} at zoom ${zoom.toFixed(2)}`);
+        loadLayer(currentLayer);
+      }, 200);
+    }
+  });
+
+  
+  
+  function handleFullscreenChange() {
+    const container = document.getElementById("openseadragon");
+    const isFullscreen = document.fullscreenElement != null;
+    container.style.width = isFullscreen ? "100vw" : "100vw";
+    container.style.height = isFullscreen ? "100vh" : "100vh";
+    try {
+      if (viewer && viewer.viewport) {
+        viewer.viewport.resize();
+        viewer.forceRedraw();
+      }
+    } catch (e) {
+      console.warn("Resize error:", e);
+    }
+  }
+
+  document.addEventListener("fullscreenchange", handleFullscreenChange);
+  document.addEventListener("webkitfullscreenchange", handleFullscreenChange);
+  document.addEventListener("mozfullscreenchange", handleFullscreenChange);
+  document.addEventListener("MSFullscreenChange", handleFullscreenChange);
+
+</script>
+
+</body>
+</html>
